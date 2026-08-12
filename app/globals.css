@@ -1,0 +1,327 @@
+/* ─── Google Fonts ────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800&family=Raleway:ital,wght@0,300;0,400;0,500;1,300&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Design Tokens & Core System ─────────────────── */
+@layer base {
+  :root {
+    /* Light theme for inner app pages (default) */
+    --background: #ffffff;
+    --foreground: #000000;
+
+    /* Colors */
+    --color-obsidian:        #000000;
+    --color-paper:           #ffffff;
+    --color-inkstone:        #181818;
+    --color-felt-gray:       #6d6d6d;
+    --color-slate-pill:      #636363;
+    --color-ash-mist:        #9a9a9a;
+    --color-pewter:          #808080;
+    --color-iridescent-fade: #a02d25;
+
+    /* Semantic surface aliases */
+    --card:                  #ffffff;
+    --card-hover:            #fafafa;
+    --card-border:           rgba(0,0,0,0.1);
+    --primary:               #000000;
+    --primary-hover:         #181818;
+    --muted:                 rgba(0,0,0,0.05);
+    --muted-foreground:      #6d6d6d;
+    --secondary:             #f5f5f5;
+    --secondary-foreground:  #6d6d6d;
+    --border:                rgba(0,0,0,0.1);
+
+    /* Font families */
+    --font-sans:      'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+    --font-serif:     'Instrument Serif', Georgia, serif;
+    --font-roobert:   'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+    --font-raleway:   'Raleway', ui-sans-serif, system-ui, sans-serif;
+    --font-system-ui: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+    /* Typography scale */
+    --text-label:        11px;  --leading-label:        1.36;
+    --text-caption:      12px;  --leading-caption:      1.19;
+    --text-body-sm:      16px;  --leading-body-sm:      1.35;
+    --text-body:         18px;  --leading-body:         1.4;
+    --text-subheading:   39px;  --leading-subheading:   1.19;
+    --text-subheading-lg:45px;  --leading-subheading-lg:1.15;
+    --text-heading-sm:   54px;  --leading-heading-sm:   1.2;
+    --text-heading:      78px;  --leading-heading:      1.05;
+    --text-heading-lg:   94px;  --leading-heading-lg:   0.76;
+    --text-display:     225px;  --leading-display:      1.1;
+
+    /* Spacing scale (4px base unit) */
+    --spacing-unit:  4px;
+    --page-max-width: 1078px;
+
+    /* Border radius */
+    --radius-buttons: 75px;
+    --radius-tags:    75px;
+    --radius-cards:   12px;
+    --radius-full:    75px;
+
+    /* Motion */
+    --ease-expressive: cubic-bezier(0.19, 1, 0.22, 1);
+    --ease-micro:      cubic-bezier(0.16, 1, 0.3, 1);
+    --duration-slow:  1250ms;
+    --duration-base:   800ms;
+    --duration-micro:  400ms;
+  }
+
+  /* Dark theme for landing page only */
+  [data-theme='dark'] {
+    --background: #000000;
+    --foreground: #ffffff;
+    --muted: rgba(255,255,255,0.05);
+    --card: #0a0a0a;
+    --card-border: rgba(255,255,255,0.1);
+    --primary: #ffffff;
+    --primary-hover: #f0f0f0;
+    --muted-foreground: #9a9a9a;
+    --secondary: #181818;
+    --secondary-foreground: #9a9a9a;
+    --border: rgba(255,255,255,0.1);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    background-color: var(--background);
+    color: var(--foreground);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    font-size: var(--text-body-sm);
+    font-weight: 400;
+    line-height: var(--leading-body-sm);
+    letter-spacing: -0.01em;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: inherit;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+    transition: opacity var(--duration-micro) var(--ease-micro), color var(--duration-micro) var(--ease-micro);
+  }
+
+  /* Scrollbar — adapts to theme */
+  [data-theme='dark'] ::-webkit-scrollbar-track { background: #000000; }
+  [data-theme='dark'] ::-webkit-scrollbar-thumb { background: #444444; }
+  [data-theme='dark'] ::-webkit-scrollbar-thumb:hover { background: #666666; }
+  
+  ::-webkit-scrollbar-track { background: #f5f5f5; }
+  ::-webkit-scrollbar-thumb { background: #d1d1d1; }
+  ::-webkit-scrollbar-thumb:hover { background: #bebebe; }
+
+  /* Selection — adapts to theme */
+  [data-theme='dark'] ::selection { background: #ffffff; color: #000000; }
+  ::selection { background: #000000; color: #ffffff; }
+
+  [data-theme='dark'] :focus-visible { outline: 1px solid #ffffff; outline-offset: 3px; }
+  :focus-visible { outline: 1px solid #000000; outline-offset: 3px; }
+}
+
+/* ─── Glassmorphism & Liquid Glass Utility Classes ───────────────── */
+.liquid-glass {
+  background: rgba(255, 255, 255, 0.01);
+  background-blend-mode: luminosity;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: none;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.liquid-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.4px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.45) 0%,
+    rgba(255, 255, 255, 0.15) 20%,
+    rgba(255, 255, 255, 0) 40%,
+    rgba(255, 255, 255, 0) 60%,
+    rgba(255, 255, 255, 0.15) 80%,
+    rgba(255, 255, 255, 0.45) 100%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.glass-pill {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border-radius: 9999px;
+  box-shadow: none !important;
+}
+
+/* ─── Animated Motion & Keyframes ──────────────────────────────── */
+@keyframes fluidLiquid {
+  0% {
+    background-position: 0% 50%;
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    background-position: 100% 50%;
+    transform: scale(1.08) rotate(2deg);
+  }
+  100% {
+    background-position: 0% 50%;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes floatGentle {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes heroTextReveal {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ─── Utility Layer ──────────────────────────────────────────────── */
+@layer utilities {
+
+  /* Liquid Iridescent Canvas */
+  .bg-iridescent-animated {
+    background: linear-gradient(
+      125deg,
+      #a0e0ab 0%,
+      #ffac2e 35%,
+      #a52d25 70%,
+      #4a1525 100%
+    );
+    background-size: 240% 240%;
+    animation: fluidLiquid 18s ease-in-out infinite;
+  }
+
+  .animate-spin-slow {
+    animation: spinSlow 16s linear infinite;
+  }
+
+  .animate-float {
+    animation: floatGentle 5s ease-in-out infinite;
+  }
+
+  .animate-hero-text {
+    animation: heroTextReveal 1.2s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+  }
+
+  .font-instrument-serif {
+    font-family: var(--font-serif);
+  }
+
+  .font-raleway {
+    font-family: var(--font-raleway);
+  }
+
+  /* Editorial Hover Pill Buttons */
+  .btn-pill-hero {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 75px;
+    color: #ffffff;
+    padding: 14px 38px;
+    font-family: var(--font-sans);
+    font-size: 15px;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  }
+
+  .btn-pill-hero:hover {
+    background: #ffffff;
+    color: #000000;
+    border-color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+  }
+
+  .btn-pill-hero-ghost {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 75px;
+    color: #ffffff;
+    padding: 14px 38px;
+    font-family: var(--font-sans);
+    font-size: 15px;
+    font-weight: 400;
+    transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .btn-pill-hero-ghost:hover {
+    border-color: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.12);
+    transform: translateY(-2px);
+  }
+
+  /* Page max-width container */
+  .container-page {
+    max-width: var(--page-max-width);
+    margin-left:  auto;
+    margin-right: auto;
+    padding-left:  40px;
+    padding-right: 40px;
+  }
+  @media (max-width: 640px) {
+    .container-page {
+      padding-left:  20px;
+      padding-right: 20px;
+    }
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+}

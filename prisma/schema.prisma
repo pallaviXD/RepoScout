@@ -1,0 +1,140 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String                       @id @default(cuid())
+  githubId         String                       @unique
+  username         String                       @unique
+  name             String?
+  email            String?
+  avatarUrl        String?
+  bio              String?
+  experienceLevel  String                       @default("BEGINNER") // BEGINNER, INTERMEDIATE, ADVANCED
+  createdAt        DateTime                     @default(now())
+  updatedAt        DateTime                     @updatedAt
+  
+  skills           UserSkill[]
+  interests        UserInterest[]
+  preferences      UserContributionPreference[]
+  savedRepos       SavedRepository[]
+  savedIssues      SavedIssue[]
+  contributions    Contribution[]
+  badges           UserBadge[]
+  stats            UserStats?
+}
+
+model UserSkill {
+  id        String   @id @default(cuid())
+  userId    String
+  skillName String
+  level     String   @default("INTERMEDIATE")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, skillName])
+}
+
+model UserInterest {
+  id           String   @id @default(cuid())
+  userId       String
+  interestName String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, interestName])
+}
+
+model UserContributionPreference {
+  id     String @id @default(cuid())
+  userId String
+  type   String // BUG_FIX, FEATURE, DOCUMENTATION, TESTING, UI_UX, PERFORMANCE, SECURITY, REFACTORING
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, type])
+}
+
+model SavedRepository {
+  id           String   @id @default(cuid())
+  userId       String
+  githubRepoId String
+  owner        String
+  repo         String
+  createdAt    DateTime @default(now())
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, owner, repo])
+}
+
+model SavedIssue {
+  id            String   @id @default(cuid())
+  userId        String
+  githubIssueId String
+  owner         String
+  repo          String
+  issueNumber   Int
+  title         String
+  labels        String   // JSON stringified array of labels
+  createdAt     DateTime @default(now())
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, owner, repo, issueNumber])
+}
+
+model Contribution {
+  id        String   @id @default(cuid())
+  userId    String
+  repoOwner String
+  repoName  String
+  type      String   // PR_OPENED, PR_MERGED, ISSUE_OPENED, ISSUE_CLOSED, FORK, COMMIT
+  title     String?
+  url       String
+  status    String   @default("PENDING") // PENDING, COMPLETED, MERGED
+  points    Int      @default(0)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Badge {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String
+  icon        String
+  category    String   // CONTRIBUTION, STREAK, MILESTONE, SKILL
+  requirement Int      // Number needed to unlock
+  points      Int      @default(0)
+  createdAt   DateTime @default(now())
+  users       UserBadge[]
+}
+
+model UserBadge {
+  id        String   @id @default(cuid())
+  userId    String
+  badgeId   String
+  earnedAt  DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badge     Badge    @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, badgeId])
+}
+
+model UserStats {
+  id                 String   @id @default(cuid())
+  userId             String   @unique
+  totalContributions Int      @default(0)
+  totalPoints        Int      @default(0)
+  currentStreak      Int      @default(0)
+  longestStreak      Int      @default(0)
+  repositoriesForked Int      @default(0)
+  issuesClosed       Int      @default(0)
+  pullRequestsMerged Int      @default(0)
+  lastContribution   DateTime?
+  level              Int      @default(1)
+  nextLevelPoints    Int      @default(100)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
