@@ -47,18 +47,29 @@ export default async function IssuesPage({ searchParams }: PageProps) {
     };
   }
 
-  const result = await searchIssues({
-    query,
-    language: language || undefined,
-    repository: repository || undefined,
-    label: label || undefined,
-    isGoodFirstIssue,
-    isHelpWanted,
-    isDocumentation,
-    sort,
-    page,
-    perPage: 12,
-  });
+  let result;
+  try {
+    result = await searchIssues({
+      query,
+      language: language || undefined,
+      repository: repository || undefined,
+      label: label || undefined,
+      isGoodFirstIssue,
+      isHelpWanted,
+      isDocumentation,
+      sort,
+      page,
+      perPage: 12,
+    });
+  } catch (error) {
+    console.error('Failed to fetch issues:', error);
+    result = {
+      issues: [],
+      totalCount: 0,
+      error: 'Failed to load issues. Please try again later.',
+      isRateLimited: true
+    };
+  }
 
   const languagesList = ['TypeScript', 'JavaScript', 'Python', 'Go', 'Rust', 'Java', 'C++'];
 

@@ -46,11 +46,21 @@ export default async function DashboardPage() {
 
   // Fetch real GitHub open issues matching user skills
   const firstSkill = userPref.skills[0] || 'TypeScript';
-  const issueResult = await searchIssues({
-    query: firstSkill,
-    isGoodFirstIssue: true,
-    perPage: 12,
-  });
+  let issueResult;
+  try {
+    issueResult = await searchIssues({
+      query: firstSkill,
+      isGoodFirstIssue: true,
+      perPage: 12,
+    });
+  } catch (error) {
+    console.error('Failed to fetch issues for dashboard:', error);
+    issueResult = {
+      issues: [],
+      totalCount: 0,
+      error: 'Unable to load recommendations at this time.'
+    };
+  }
 
   // Calculate & rank recommendations deterministically
   const rankedRecommendations = issueResult.issues

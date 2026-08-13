@@ -33,18 +33,29 @@ export default async function ExplorePage({ searchParams }: PageProps) {
   const sort = searchParams.sort || 'best-match';
   const page = searchParams.page ? parseInt(searchParams.page, 10) : 1;
 
-  const result = await searchRepositories({
-    query,
-    language: language || undefined,
-    minStars,
-    minForks,
-    topic: topic || undefined,
-    goodFirstIssuesOnly,
-    activeOnly,
-    sort,
-    page,
-    perPage: 12,
-  });
+  let result;
+  try {
+    result = await searchRepositories({
+      query,
+      language: language || undefined,
+      minStars,
+      minForks,
+      topic: topic || undefined,
+      goodFirstIssuesOnly,
+      activeOnly,
+      sort,
+      page,
+      perPage: 12,
+    });
+  } catch (error) {
+    console.error('Failed to fetch repositories:', error);
+    result = {
+      repositories: [],
+      totalCount: 0,
+      error: 'Failed to load repositories. Please try again later.',
+      isRateLimited: true
+    };
+  }
 
   const languagesList = ['JavaScript', 'TypeScript', 'Python', 'Go', 'Rust', 'Java', 'C++', 'PHP'];
 
