@@ -153,7 +153,7 @@ export const Navbar: React.FC = () => {
             </div>
           ) : (
             <button
-              onClick={() => router.push('/auth/signin')}
+              onClick={() => window.location.href = '/api/auth/signin/github'}
               className={cn(
                 'flex items-center gap-2 text-[12px] font-[400] leading-none',
                 'px-[20px] py-[9px] rounded-full border',
@@ -210,7 +210,7 @@ export const Navbar: React.FC = () => {
                 <LogOut className="w-3.5 h-3.5" /> Sign Out
               </button>
             ) : (
-              <button onClick={() => router.push('/auth/signin')}
+              <button onClick={() => window.location.href = '/api/auth/signin/github'}
                 className="flex items-center gap-2 text-[12px] font-[400] text-black border border-black/25 rounded-full px-5 py-2 hover:bg-black/3">
                 <Github className="w-[13px] h-[13px]" /> Sign in with GitHub
               </button>

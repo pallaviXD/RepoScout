@@ -1,16 +1,17 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { Suspense, useEffect } from 'react';
-import { signIn } from 'next-auth/react';
 
 function SignInContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const callbackUrl = searchParams?.get('callbackUrl') || '/dashboard';
 
   useEffect(() => {
-    // Automatically redirect to GitHub OAuth
-    signIn('github', { callbackUrl });
+    // Redirect to NextAuth GitHub provider
+    const signInUrl = `/api/auth/signin/github?callbackUrl=${encodeURIComponent(callbackUrl)}`;
+    window.location.href = signInUrl;
   }, [callbackUrl]);
 
   return (
