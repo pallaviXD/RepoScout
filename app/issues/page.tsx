@@ -204,6 +204,7 @@ export default async function IssuesPage({ searchParams }: PageProps) {
         </div>
       )}
 
+      </div>
     </div>
   );
 }
