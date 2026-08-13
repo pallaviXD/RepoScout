@@ -32,6 +32,7 @@ yarn-error.log*
 
 # Typescript
 *.tsbuildinfo
+next-env.d.ts
 
 # Database
 prisma/dev.db
@@ -43,3 +44,17 @@ prisma/dev.db-journal
 *.swp
 *.swo
 *~
+
+# Documentation (development notes)
+COMPONENTS_SHOWCASE.md
+DEMO_MODE_FIXES.md
+DEMO_MODE.md
+DISCOVERY_QUICKSTART.md
+DISCOVERY_REDESIGN.md
+DISCOVERY_SUMMARY.md
+DISCOVERY_VS_EXPLORE.md
+FEATURES.md
+GAMIFICATION_FEATURES.md
+PROJECT_AUDIT.md
+QUICK_START.md
+TRANSFORMATION_SUMMARY.md
