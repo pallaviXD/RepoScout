@@ -3,6 +3,8 @@ import '@/app/globals.css';
 import { Providers } from '@/components/layout/providers';
 import { ClientLayout } from '@/components/layout/client-layout';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'RepoScout — Scout your next open-source contribution',
   description:

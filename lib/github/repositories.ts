@@ -1,5 +1,9 @@
 import { getOctokit, handleGitHubError } from './client';
 import { GitHubRepository } from '../types';
+import { MOCK_REPOSITORIES } from './mockData';
+
+// Demo mode - use mock data instead of real API
+const DEMO_MODE = true;
 
 export interface RepositorySearchFilters {
   query?: string;
@@ -27,6 +31,44 @@ export interface RepositorySearchResult {
 export async function searchRepositories(
   filters: RepositorySearchFilters = {}
 ): Promise<RepositorySearchResult> {
+  // DEMO MODE: Return mock data
+  if (DEMO_MODE) {
+    let filteredRepos = [...MOCK_REPOSITORIES];
+
+    // Filter by language
+    if (filters.language) {
+      filteredRepos = filteredRepos.filter(
+        (repo) => repo.language?.toLowerCase() === filters.language?.toLowerCase()
+      );
+    }
+
+    // Filter by min stars
+    if (filters.minStars) {
+      filteredRepos = filteredRepos.filter((repo) => repo.stars >= filters.minStars!);
+    }
+
+    // Filter by good first issues
+    if (filters.goodFirstIssuesOnly) {
+      filteredRepos = filteredRepos.filter((repo) => repo.hasGoodFirstIssues);
+    }
+
+    // Search by query
+    if (filters.query) {
+      const query = filters.query.toLowerCase();
+      filteredRepos = filteredRepos.filter(
+        (repo) =>
+          repo.name.toLowerCase().includes(query) ||
+          repo.description?.toLowerCase().includes(query)
+      );
+    }
+
+    return {
+      repositories: filteredRepos,
+      totalCount: filteredRepos.length,
+    };
+  }
+
+  // Real API mode (original code)
   const octokit = getOctokit();
   const page = filters.page || 1;
   const perPage = filters.perPage || 12;

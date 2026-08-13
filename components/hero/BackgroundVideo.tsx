@@ -1,79 +1,135 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
-import Hls from 'hls.js';
+import React, { useEffect, useRef, useState } from 'react';
+
+// Primary: Mux HLS stream
+const HLS_SRC = 'https://stream.mux.com/kimF2ha9zLrX64H00UgLGPflCzNtl1T0215MlAmeOztv8.m3u8';
+
+// Fallback: free, always-available open-licensed MP4 (Big Buck Bunny dark cinematic crop)
+// This serves as a guaranteed offline-safe demo backdrop
+const MP4_FALLBACK = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
 
 interface BackgroundVideoProps {
   src?: string;
+  fallback?: string;
 }
 
 export const BackgroundVideo: React.FC<BackgroundVideoProps> = ({
-  src = 'https://stream.mux.com/kimF2ha9zLrX64H00UgLGPflCzNtl1T0215MlAmeOztv8.m3u8',
+  src = HLS_SRC,
+  fallback = MP4_FALLBACK,
 }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
-    let hls: Hls | null = null;
+    let mounted = true;
+    let hlsInstance: import('hls.js').default | null = null;
 
-    if (Hls.isSupported()) {
-      // Hls.js initialization (Chrome, Firefox, Edge)
-      hls = new Hls({
-        enableWorker: true,
-        lowLatencyMode: true,
-        backBufferLength: 90,
-      });
+    const markReady = () => {
+      if (!mounted) return;
+      setReady(true);
+      video.play().catch(() => {});
+    };
 
-      hls.loadSource(src);
-      hls.attachMedia(video);
+    const loadFallback = () => {
+      if (!mounted) return;
+      if (hlsInstance) {
+        hlsInstance.destroy();
+        hlsInstance = null;
+      }
+      video.src = fallback;
+      video.load();
+      video.addEventListener('canplay', markReady, { once: true });
+    };
 
-      hls.on(Hls.Events.MANIFEST_PARSED, () => {
-        video.play().catch((err) => {
-          console.warn('Autoplay failed:', err);
-        });
-      });
+    const startHls = async () => {
+      if (!mounted) return;
 
-      hls.on(Hls.Events.ERROR, (_event, data) => {
-        if (data.fatal) {
-          switch (data.type) {
-            case Hls.ErrorTypes.NETWORK_ERROR:
-              hls?.startLoad();
-              break;
-            case Hls.ErrorTypes.MEDIA_ERROR:
-              hls?.recoverMediaError();
-              break;
-            default:
-              hls?.destroy();
-              break;
-          }
+      // Safari / native HLS support
+      if (!window.MediaSource && video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = src;
+        video.addEventListener('loadedmetadata', markReady, { once: true });
+        video.addEventListener('error', loadFallback, { once: true });
+        return;
+      }
+
+      // Dynamically import hls.js so it never blocks the initial render
+      try {
+        const { default: Hls } = await import('hls.js');
+
+        if (!Hls.isSupported()) {
+          loadFallback();
+          return;
         }
-      });
-    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-      // Native HLS support (Safari on macOS/iOS)
-      video.src = src;
-      video.addEventListener('loadedmetadata', () => {
-        video.play().catch((err) => console.warn('Safari autoplay error:', err));
-      });
-    }
 
-    return () => {
-      if (hls) {
-        hls.destroy();
+        hlsInstance = new Hls({
+          enableWorker: true,
+          lowLatencyMode: false,
+          backBufferLength: 30,
+          // Start loading immediately, do not wait
+          startLevel: -1,
+          autoStartLoad: true,
+        });
+
+        hlsInstance.loadSource(src);
+        hlsInstance.attachMedia(video);
+
+        hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => {
+          markReady();
+        });
+
+        hlsInstance.on(Hls.Events.ERROR, (_e, data) => {
+          if (!data.fatal) return;
+          if (data.type === (Hls as any).ErrorTypes?.NETWORK_ERROR) {
+            // Network error → try MP4 fallback
+            loadFallback();
+          } else if (data.type === (Hls as any).ErrorTypes?.MEDIA_ERROR) {
+            hlsInstance?.recoverMediaError();
+          } else {
+            loadFallback();
+          }
+        });
+      } catch {
+        // hls.js import failed → use MP4 directly
+        loadFallback();
       }
     };
-  }, [src]);
+
+    // Start immediately — do NOT defer with requestIdleCallback
+    startHls();
+
+    return () => {
+      mounted = false;
+      if (hlsInstance) {
+        hlsInstance.destroy();
+        hlsInstance = null;
+      }
+    };
+  }, [src, fallback]);
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+      {/* Immediate dark fallback — always visible behind the video */}
+      <div
+        className="absolute inset-0"
+        style={{ background: 'radial-gradient(ellipse at 70% 60%, #071018 0%, #060c11 60%, #030608 100%)' }}
+      />
       <video
         ref={videoRef}
         autoPlay
         muted
         loop
         playsInline
-        className="w-full h-full object-cover opacity-100"
+        preload="none"
+        style={{
+          opacity: ready ? 1 : 0,
+          transition: 'opacity 1200ms ease',
+          willChange: 'opacity',
+        }}
+        className="absolute inset-0 w-full h-full object-cover"
       />
     </div>
   );

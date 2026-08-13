@@ -1,5 +1,9 @@
 import { getOctokit, handleGitHubError } from './client';
 import { GitHubIssue } from '../types';
+import { MOCK_ISSUES } from './mockData';
+
+// Demo mode - use mock data instead of real API
+const DEMO_MODE = true;
 
 export interface IssueSearchFilters {
   query?: string;
@@ -27,6 +31,55 @@ export interface IssueSearchResult {
 export async function searchIssues(
   filters: IssueSearchFilters = {}
 ): Promise<IssueSearchResult> {
+  // DEMO MODE: Return mock data
+  if (DEMO_MODE) {
+    let filteredIssues = [...MOCK_ISSUES];
+
+    // Filter by language
+    if (filters.language) {
+      filteredIssues = filteredIssues.filter(
+        (issue) => issue.repository.language?.toLowerCase() === filters.language?.toLowerCase()
+      );
+    }
+
+    // Filter by good first issue
+    if (filters.isGoodFirstIssue) {
+      filteredIssues = filteredIssues.filter((issue) =>
+        issue.labels.some((label) => label.name.toLowerCase().includes('good first issue'))
+      );
+    }
+
+    // Filter by help wanted
+    if (filters.isHelpWanted) {
+      filteredIssues = filteredIssues.filter((issue) =>
+        issue.labels.some((label) => label.name.toLowerCase().includes('help wanted'))
+      );
+    }
+
+    // Filter by documentation
+    if (filters.isDocumentation) {
+      filteredIssues = filteredIssues.filter((issue) =>
+        issue.labels.some((label) => label.name.toLowerCase().includes('documentation'))
+      );
+    }
+
+    // Search by query
+    if (filters.query) {
+      const query = filters.query.toLowerCase();
+      filteredIssues = filteredIssues.filter(
+        (issue) =>
+          issue.title.toLowerCase().includes(query) ||
+          issue.body?.toLowerCase().includes(query)
+      );
+    }
+
+    return {
+      issues: filteredIssues,
+      totalCount: filteredIssues.length,
+    };
+  }
+
+  // Real API mode (original code)
   const octokit = getOctokit();
   const page = filters.page || 1;
   const perPage = filters.perPage || 12;

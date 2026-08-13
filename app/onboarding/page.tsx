@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import React from 'react';
 import { OnboardingWizard } from '@/components/onboarding/onboarding-wizard';
 import { getCurrentUser } from '@/lib/auth/options';

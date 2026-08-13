@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import React from 'react';
 import { searchIssues } from '@/lib/github/issues';
 import { getCurrentUser } from '@/lib/auth/options';

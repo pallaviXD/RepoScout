@@ -9,7 +9,7 @@ async function main() {
     {
       name: 'First Fork',
       description: 'Forked your first repository',
-      icon: '🍴',
+      icon: 'GitFork',
       category: 'CONTRIBUTION',
       requirement: 1,
       points: 10
@@ -17,7 +17,7 @@ async function main() {
     {
       name: 'Fork Master',
       description: 'Forked 10 repositories',
-      icon: '🔱',
+      icon: 'GitFork',
       category: 'MILESTONE',
       requirement: 10,
       points: 50
@@ -25,7 +25,7 @@ async function main() {
     {
       name: 'Early Bird',
       description: 'Started your open source journey',
-      icon: '🌅',
+      icon: 'Compass',
       category: 'CONTRIBUTION',
       requirement: 1,
       points: 5
@@ -33,7 +33,7 @@ async function main() {
     {
       name: 'Consistent Contributor',
       description: '7 day contribution streak',
-      icon: '🔥',
+      icon: 'Zap',
       category: 'STREAK',
       requirement: 7,
       points: 50
@@ -41,7 +41,7 @@ async function main() {
     {
       name: 'Dedication',
       description: '30 day contribution streak',
-      icon: '💪',
+      icon: 'Shield',
       category: 'STREAK',
       requirement: 30,
       points: 200
@@ -49,7 +49,7 @@ async function main() {
     {
       name: 'Contributor',
       description: 'Made 25 contributions',
-      icon: '⭐',
+      icon: 'Star',
       category: 'MILESTONE',
       requirement: 25,
       points: 100
@@ -57,7 +57,7 @@ async function main() {
     {
       name: 'Active Contributor',
       description: 'Made 50 contributions',
-      icon: '🌟',
+      icon: 'Sparkles',
       category: 'MILESTONE',
       requirement: 50,
       points: 250
@@ -65,7 +65,7 @@ async function main() {
     {
       name: 'Super Contributor',
       description: 'Made 100 contributions',
-      icon: '💫',
+      icon: 'Award',
       category: 'MILESTONE',
       requirement: 100,
       points: 500
@@ -73,7 +73,7 @@ async function main() {
     {
       name: 'Issue Hunter',
       description: 'Closed 10 issues',
-      icon: '🎯',
+      icon: 'Target',
       category: 'SKILL',
       requirement: 10,
       points: 75
@@ -81,7 +81,7 @@ async function main() {
     {
       name: 'PR Champion',
       description: 'Merged 10 pull requests',
-      icon: '🏆',
+      icon: 'Trophy',
       category: 'SKILL',
       requirement: 10,
       points: 100
@@ -96,7 +96,7 @@ async function main() {
     });
   }
 
-  console.log('✓ Badges seeded successfully!');
+  console.log('Badges seeded successfully!');
 }
 
 main()

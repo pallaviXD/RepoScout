@@ -133,7 +133,7 @@ export const OnboardingWizard: React.FC = () => {
           Step {currentStep} of 4 — Setup Profile
         </span>
         <h1 className="text-3xl font-extrabold text-foreground tracking-tight">
-          Welcome to RepoScout 👋
+          Welcome to RepoScout
         </h1>
         <p className="text-sm text-secondary-foreground">
           Let&apos;s personalize your open-source discovery recommendations.

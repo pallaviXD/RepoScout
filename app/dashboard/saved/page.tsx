@@ -1,12 +1,14 @@
 import React from 'react';
 import Link from 'next/link';
 import { getCurrentUser } from '@/lib/auth/options';
-import { prisma } from '@/lib/db/prisma';
+import { MOCK_REPOSITORIES, MOCK_ISSUES } from '@/lib/github/mockData';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Bookmark, ExternalLink, Trash2, ArrowLeft, GitFork, Star } from 'lucide-react';
+import { Bookmark, ExternalLink, ArrowLeft } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
+
+export const dynamic = 'force-dynamic';
 
 export default async function SavedItemsPage({
   searchParams,
@@ -16,32 +18,56 @@ export default async function SavedItemsPage({
   const user = await getCurrentUser();
   const activeTab = searchParams.tab || 'projects';
 
-  if (!user) {
-    return (
-      <div className="max-w-4xl mx-auto px-4 py-20 text-center space-y-4">
-        <h1 className="text-2xl font-bold text-foreground">Sign in Required</h1>
-        <p className="text-sm text-secondary-foreground">Please sign in to access your saved repositories and issues.</p>
-        <a href="/api/auth/signin">
-          <Button variant="primary">Sign in with GitHub</Button>
-        </a>
-      </div>
-    );
-  }
+  // Demo mode: use mock data seeded from DEMO_USER.savedRepos / savedIssues
+  const savedRepos = user?.savedRepos?.map((sr: any) => {
+    const match = MOCK_REPOSITORIES.find(r => r.name === sr.repo);
+    return {
+      id: sr.id,
+      owner: sr.owner,
+      repo: sr.repo,
+      stars: match?.stars ?? 0,
+      language: match?.language ?? null,
+      description: match?.description ?? null,
+      htmlUrl: match?.htmlUrl ?? `https://github.com/${sr.owner}/${sr.repo}`,
+      createdAt: new Date().toISOString(),
+    };
+  }) ?? MOCK_REPOSITORIES.slice(0, 3).map(r => ({
+    id: r.id.toString(),
+    owner: r.owner.login,
+    repo: r.name,
+    stars: r.stars,
+    language: r.language,
+    description: r.description,
+    htmlUrl: r.htmlUrl,
+    createdAt: r.updatedAt,
+  }));
 
-  const [savedRepos, savedIssues] = await Promise.all([
-    prisma.savedRepository.findMany({
-      where: { userId: user.id },
-      orderBy: { createdAt: 'desc' },
-    }),
-    prisma.savedIssue.findMany({
-      where: { userId: user.id },
-      orderBy: { createdAt: 'desc' },
-    }),
-  ]);
+  const savedIssues = user?.savedIssues?.map((si: any) => {
+    const match = MOCK_ISSUES.find(i => i.number === si.issueNumber);
+    return {
+      id: si.id,
+      owner: si.owner,
+      repo: si.repo,
+      issueNumber: si.issueNumber,
+      title: match?.title ?? `Issue #${si.issueNumber}`,
+      labels: match?.labels?.map(l => l.name) ?? [],
+      htmlUrl: match?.htmlUrl ?? `https://github.com/${si.owner}/${si.repo}/issues/${si.issueNumber}`,
+      createdAt: new Date().toISOString(),
+    };
+  }) ?? MOCK_ISSUES.slice(0, 2).map(i => ({
+    id: i.id.toString(),
+    owner: i.repository.owner,
+    repo: i.repository.name,
+    issueNumber: i.number,
+    title: i.title,
+    labels: i.labels.map(l => l.name),
+    htmlUrl: i.htmlUrl,
+    createdAt: i.createdAt,
+  }));
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-      
+
       {/* Top Header */}
       <div className="flex items-center justify-between border-b border-border pb-6">
         <div>
@@ -87,7 +113,10 @@ export default async function SavedItemsPage({
                   <div className="space-y-2">
                     <span className="text-xs font-mono text-primary font-semibold">{r.owner}</span>
                     <h3 className="text-base font-bold text-foreground">{r.repo}</h3>
-                    <p className="text-xs text-muted-foreground font-mono">Saved {formatDate(r.createdAt.toISOString())}</p>
+                    {r.description && (
+                      <p className="text-xs text-muted-foreground line-clamp-2">{r.description}</p>
+                    )}
+                    <p className="text-xs text-muted-foreground font-mono">Saved {formatDate(r.createdAt)}</p>
                   </div>
 
                   <div className="pt-4 border-t border-border flex items-center justify-between mt-4">
@@ -97,7 +126,7 @@ export default async function SavedItemsPage({
                       </Button>
                     </Link>
                     <a
-                      href={`https://github.com/${r.owner}/${r.repo}`}
+                      href={r.htmlUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-xs text-muted-foreground hover:text-foreground font-mono"
@@ -121,43 +150,36 @@ export default async function SavedItemsPage({
         <div className="space-y-4">
           {savedIssues.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {savedIssues.map((issue) => {
-                let labels: string[] = [];
-                try {
-                  labels = JSON.parse(issue.labels);
-                } catch (e) {}
-
-                return (
-                  <Card key={issue.id} className="p-5 flex flex-col justify-between h-full bg-card hover:border-primary/40">
-                    <div className="space-y-2">
-                      <span className="text-xs font-mono text-primary font-semibold">
-                        {issue.owner}/{issue.repo} #{issue.issueNumber}
-                      </span>
-                      <h3 className="text-sm font-bold text-foreground line-clamp-2">{issue.title}</h3>
-                      <div className="flex flex-wrap gap-1">
-                        {labels.slice(0, 3).map((l) => (
-                          <Badge key={l} variant="outline" className="text-[10px]">
-                            {l}
-                          </Badge>
-                        ))}
-                      </div>
+              {savedIssues.map((issue) => (
+                <Card key={issue.id} className="p-5 flex flex-col justify-between h-full bg-card hover:border-primary/40">
+                  <div className="space-y-2">
+                    <span className="text-xs font-mono text-primary font-semibold">
+                      {issue.owner}/{issue.repo} #{issue.issueNumber}
+                    </span>
+                    <h3 className="text-sm font-bold text-foreground line-clamp-2">{issue.title}</h3>
+                    <div className="flex flex-wrap gap-1">
+                      {issue.labels.slice(0, 3).map((l: string) => (
+                        <Badge key={l} variant="outline" className="text-[10px]">
+                          {l}
+                        </Badge>
+                      ))}
                     </div>
+                  </div>
 
-                    <div className="pt-4 border-t border-border flex items-center justify-between mt-4 text-xs">
-                      <span className="text-muted-foreground font-mono">Saved {formatDate(issue.createdAt.toISOString())}</span>
-                      <a
-                        href={`https://github.com/${issue.owner}/${issue.repo}/issues/${issue.issueNumber}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <Button variant="primary" size="sm" className="text-xs py-1 px-2.5">
-                          View Issue <ExternalLink className="w-3 h-3 ml-1" />
-                        </Button>
-                      </a>
-                    </div>
-                  </Card>
-                );
-              })}
+                  <div className="pt-4 border-t border-border flex items-center justify-between mt-4 text-xs">
+                    <span className="text-muted-foreground font-mono">Saved {formatDate(issue.createdAt)}</span>
+                    <a
+                      href={issue.htmlUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Button variant="primary" size="sm" className="text-xs py-1 px-2.5">
+                        View Issue <ExternalLink className="w-3 h-3 ml-1" />
+                      </Button>
+                    </a>
+                  </div>
+                </Card>
+              ))}
             </div>
           ) : (
             <div className="text-center py-16 bg-card border border-border rounded-xl space-y-2">

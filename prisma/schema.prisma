@@ -12,7 +12,7 @@ model User {
   githubId         String                       @unique
   username         String                       @unique
   name             String?
-  email            String?
+  email            String?                      @unique
   avatarUrl        String?
   bio              String?
   experienceLevel  String                       @default("BEGINNER") // BEGINNER, INTERMEDIATE, ADVANCED

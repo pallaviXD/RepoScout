@@ -36,7 +36,7 @@ export function calculateMatchScore(
   if (repoLanguage && userSkillsLower.includes(repoLanguage)) {
     skillPoints += 20;
     matchedSkillsCount++;
-    reasons.push(`✓ Primary language (${issue.repository?.language}) matches your skills`);
+    reasons.push(`Primary language (${issue.repository?.language}) matches your skills`);
   } else if (repoLanguage) {
     learningOpportunitiesSet.add(issue.repository?.language || '');
   }
@@ -47,7 +47,7 @@ export function calculateMatchScore(
       skillPoints += 15;
       matchedSkillsCount++;
       const capitalized = skill.charAt(0).toUpperCase() + skill.slice(1);
-      reasons.push(`✓ Skill (${capitalized}) matches issue labels`);
+      reasons.push(`Skill (${capitalized}) matches issue labels`);
       break;
     }
   }
@@ -62,16 +62,16 @@ export function calculateMatchScore(
   const userExp = userPref.experienceLevel || 'BEGINNER';
   if (userExp === 'BEGINNER' && diffCalc.difficulty === 'Beginner') {
     experienceMatch = 20;
-    reasons.push('✓ Beginner issue difficulty matches your experience level');
+    reasons.push('Beginner issue difficulty matches your experience level');
   } else if (userExp === 'INTERMEDIATE' && diffCalc.difficulty === 'Intermediate') {
     experienceMatch = 20;
-    reasons.push('✓ Intermediate issue difficulty matches your experience level');
+    reasons.push('Intermediate issue difficulty matches your experience level');
   } else if (userExp === 'ADVANCED' && (diffCalc.difficulty === 'Advanced' || diffCalc.difficulty === 'Intermediate')) {
     experienceMatch = 20;
-    reasons.push('✓ Issue difficulty matches your advanced experience');
+    reasons.push('Issue difficulty matches your advanced experience');
   } else if (userExp === 'BEGINNER' && diffCalc.difficulty === 'Intermediate') {
     experienceMatch = 12;
-    reasons.push('⚡ Mild challenge: issue is Intermediate for a Beginner');
+    reasons.push('Mild challenge: issue is Intermediate for a Beginner');
   } else {
     experienceMatch = 8;
   }
@@ -83,12 +83,12 @@ export function calculateMatchScore(
   for (const interest of userInterestsLower) {
     if (repoTopics.some((t: string) => t.includes(interest) || interest.includes(t))) {
       interestMatch = 15;
-      reasons.push(`✓ Repository topic matches your interest in ${interest}`);
+      reasons.push(`Repository topic matches your interest in ${interest}`);
       break;
     }
     if (labelNames.some((l) => l.includes(interest))) {
       interestMatch = 15;
-      reasons.push(`✓ Issue relates to your interest in ${interest}`);
+      reasons.push(`Issue relates to your interest in ${interest}`);
       break;
     }
   }
@@ -100,7 +100,7 @@ export function calculateMatchScore(
   let difficultyMatch = 10;
   if (normalized.isGoodFirstIssue) {
     difficultyMatch = 10;
-    reasons.push('✓ Has Good First Issue tag for easier onboarding');
+    reasons.push('Has Good First Issue tag for easier onboarding');
   } else if (diffCalc.difficulty === 'Beginner') {
     difficultyMatch = 9;
   } else if (diffCalc.difficulty === 'Intermediate') {
@@ -115,7 +115,7 @@ export function calculateMatchScore(
   const daysOld = Math.floor((Date.now() - updatedAt.getTime()) / (1000 * 60 * 60 * 24));
   if (daysOld <= 7) {
     repositoryActivity = 10;
-    reasons.push('✓ Repository updated recently (within 7 days)');
+    reasons.push('Repository updated recently (within 7 days)');
   } else if (daysOld <= 30) {
     repositoryActivity = 8;
   } else {

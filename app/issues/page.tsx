@@ -1,11 +1,14 @@
+export const dynamic = 'force-dynamic';
+
 import React from 'react';
 import { searchIssues } from '@/lib/github/issues';
+import { MOCK_ISSUES } from '@/lib/github/mockData';
 import { getCurrentUser } from '@/lib/auth/options';
 import { calculateMatchScore } from '@/lib/recommendation/matchScore';
 import { IssueCard } from '@/components/issues/issue-card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Search, Filter, AlertTriangle, Bug } from 'lucide-react';
+import { Search, Filter, AlertTriangle, Bug, Target } from 'lucide-react';
 import { UserPreferences } from '@/lib/types';
 
 interface PageProps {
@@ -35,7 +38,7 @@ export default async function IssuesPage({ searchParams }: PageProps) {
   const sort = searchParams.sort || 'updated';
   const page = searchParams.page ? parseInt(searchParams.page, 10) : 1;
 
-  // Retrieve user session preferences if authenticated
+  // Use mock data for demo - provides a real feel without authentication
   const user = await getCurrentUser();
   let userPref: UserPreferences | null = null;
   if (user) {
@@ -49,25 +52,66 @@ export default async function IssuesPage({ searchParams }: PageProps) {
 
   let result;
   try {
-    result = await searchIssues({
-      query,
-      language: language || undefined,
-      repository: repository || undefined,
-      label: label || undefined,
-      isGoodFirstIssue,
-      isHelpWanted,
-      isDocumentation,
-      sort,
-      page,
-      perPage: 12,
-    });
-  } catch (error) {
-    console.error('Failed to fetch issues:', error);
+    // Filter mock issues based on search criteria
+    let filteredIssues = [...MOCK_ISSUES];
+    
+    if (query) {
+      filteredIssues = filteredIssues.filter(issue => 
+        issue.title.toLowerCase().includes(query.toLowerCase()) ||
+        issue.body?.toLowerCase().includes(query.toLowerCase())
+      );
+    }
+    
+    if (language) {
+      filteredIssues = filteredIssues.filter(issue => 
+        issue.repository.language?.toLowerCase() === language.toLowerCase()
+      );
+    }
+    
+    if (repository) {
+      filteredIssues = filteredIssues.filter(issue => 
+        issue.repository.fullName.toLowerCase().includes(repository.toLowerCase())
+      );
+    }
+    
+    if (isGoodFirstIssue) {
+      filteredIssues = filteredIssues.filter(issue => 
+        issue.labels.some(label => 
+          typeof label === 'object' && label.name.toLowerCase().includes('good first issue')
+        )
+      );
+    }
+    
+    if (isHelpWanted) {
+      filteredIssues = filteredIssues.filter(issue => 
+        issue.labels.some(label => 
+          typeof label === 'object' && label.name.toLowerCase().includes('help wanted')
+        )
+      );
+    }
+
+    // Apply sorting
+    if (sort === 'created') {
+      filteredIssues.sort((a, b) => 
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+    } else if (sort === 'comments') {
+      filteredIssues.sort((a, b) => b.commentsCount - a.commentsCount);
+    } else {
+      filteredIssues.sort((a, b) => 
+        new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+      );
+    }
+
     result = {
-      issues: [],
-      totalCount: 0,
-      error: 'Failed to load issues. Please try again later.',
-      isRateLimited: true
+      issues: filteredIssues,
+      totalCount: filteredIssues.length,
+    };
+  } catch (error) {
+    console.error('Failed to process issues:', error);
+    result = {
+      issues: MOCK_ISSUES,
+      totalCount: MOCK_ISSUES.length,
     };
   }
 
@@ -163,17 +207,6 @@ export default async function IssuesPage({ searchParams }: PageProps) {
         </div>
       </form>
 
-      {/* API Rate limit / error banner */}
-      {result.error && (
-        <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 text-sm flex items-center gap-3">
-          <AlertTriangle className="w-5 h-5 shrink-0" />
-          <div>
-            <p className="font-bold">{result.isRateLimited ? 'GitHub Rate Limit Reached' : 'API Response Issue'}</p>
-            <p className="text-xs text-amber-400/80">{result.error}</p>
-          </div>
-        </div>
-      )}
-
       {/* Issue Card Grid */}
       {result.issues.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -183,15 +216,13 @@ export default async function IssuesPage({ searchParams }: PageProps) {
           })}
         </div>
       ) : (
-        !result.error && (
-          <div className="text-center py-16 space-y-3 bg-card border border-border rounded-xl">
-            <Bug className="w-10 h-10 text-muted-foreground mx-auto" />
-            <h3 className="text-lg font-bold text-foreground">No matching issues found</h3>
-            <p className="text-xs text-muted-foreground max-w-sm mx-auto">
-              Try broadening your search query or unchecking strict label filters.
-            </p>
-          </div>
-        )
+        <div className="text-center py-16 space-y-3 bg-card border border-border rounded-xl">
+          <Bug className="w-10 h-10 text-muted-foreground mx-auto" />
+          <h3 className="text-lg font-bold text-foreground">No matching issues found</h3>
+          <p className="text-xs text-muted-foreground max-w-sm mx-auto">
+            Try broadening your search query or unchecking strict label filters.
+          </p>
+        </div>
       )}
 
       {/* Pagination */}

@@ -35,7 +35,7 @@ export default async function SettingsPage() {
           <div className="space-y-2 text-xs font-mono">
             <p><span className="text-muted-foreground">Username:</span> {user.username}</p>
             <p><span className="text-muted-foreground">Email:</span> {user.email || 'GitHub Email'}</p>
-            <p><span className="text-muted-foreground">GitHub ID:</span> {user.githubId}</p>
+            <p><span className="text-muted-foreground">User ID:</span> {user.id}</p>
           </div>
           <div className="pt-2">
             <Link href="/onboarding">

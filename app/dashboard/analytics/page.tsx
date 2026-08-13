@@ -1,36 +1,52 @@
+export const dynamic = 'force-dynamic';
+
 import React from 'react';
-import { redirect } from 'next/navigation';
 import { getCurrentUser } from '@/lib/auth/options';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Trophy, TrendingUp, GitFork, GitPullRequest, Star, Flame, Award, Target, Calendar, CheckCircle2 } from 'lucide-react';
-import { prisma } from '@/lib/db/prisma';
 
 export default async function AnalyticsPage() {
   const user = await getCurrentUser();
   
+  // Demo mode: always show analytics with mock data
   if (!user) {
-    redirect('/auth/signin');
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-foreground mb-2">Loading...</h1>
+          <p className="text-muted-foreground">Setting up your analytics</p>
+        </div>
+      </div>
+    );
   }
 
-  // Fetch user stats
-  const stats = await prisma.userStats.findUnique({
-    where: { userId: user.id }
-  });
+  // Use mock data from user object (no database calls)
+  const stats = user.stats;
 
-  // Fetch recent contributions
-  const contributions = await prisma.contribution.findMany({
-    where: { userId: user.id },
-    orderBy: { createdAt: 'desc' },
-    take: 10
-  });
+  // Use contributions from user object
+  const contributions = user.contributions.map((c: any, idx: number) => ({
+    id: c.id,
+    type: c.type,
+    title: c.title,
+    repoOwner: c.repoName?.split('/')[0] || 'demo',
+    repoName: c.repoName?.split('/')[1] || 'repo',
+    createdAt: new Date(c.createdAt),
+    status: c.type === 'PR_MERGED' ? 'MERGED' : c.type === 'ISSUE_CLOSED' ? 'COMPLETED' : 'OPEN',
+    points: c.type === 'PR_MERGED' ? 75 : c.type === 'ISSUE_CLOSED' ? 50 : 25,
+  }));
 
-  // Fetch user badges
-  const userBadges = await prisma.userBadge.findMany({
-    where: { userId: user.id },
-    include: { badge: true },
-    orderBy: { earnedAt: 'desc' }
-  });
+  // Use badges from user object
+  const userBadges = user.badges.map((b: any) => ({
+    badge: {
+      id: b.id,
+      name: b.badge.name,
+      icon: b.badge.icon,
+      description: b.badge.description,
+      points: 50,
+    },
+    earnedAt: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000),
+  }));
 
   // Calculate level progress
   const currentStats = stats || {

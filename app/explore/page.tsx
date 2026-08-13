@@ -1,10 +1,13 @@
-import React, { Suspense } from 'react';
-import { searchRepositories } from '@/lib/github/repositories';
-import { RepositoryCard } from '@/components/projects/repository-card';
+export const dynamic = 'force-dynamic';
+
+import React from 'react';
+import ExploreClient from './explore-client';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Search, Filter, AlertTriangle, Compass } from 'lucide-react';
+import { Search, Filter, AlertTriangle, Compass, TrendingUp } from 'lucide-react';
+import { getCurrentUser } from '@/lib/auth/options';
+import { UserPreferences } from '@/lib/types';
 
 interface PageProps {
   searchParams: {
@@ -33,29 +36,14 @@ export default async function ExplorePage({ searchParams }: PageProps) {
   const sort = searchParams.sort || 'best-match';
   const page = searchParams.page ? parseInt(searchParams.page, 10) : 1;
 
-  let result;
-  try {
-    result = await searchRepositories({
-      query,
-      language: language || undefined,
-      minStars,
-      minForks,
-      topic: topic || undefined,
-      goodFirstIssuesOnly,
-      activeOnly,
-      sort,
-      page,
-      perPage: 12,
-    });
-  } catch (error) {
-    console.error('Failed to fetch repositories:', error);
-    result = {
-      repositories: [],
-      totalCount: 0,
-      error: 'Failed to load repositories. Please try again later.',
-      isRateLimited: true
-    };
-  }
+  // Demo-first: use local demo user and client-side demo dataset
+  const user = await getCurrentUser();
+  const userPref: UserPreferences = {
+    skills: user?.skills.map((s: any) => s.skillName) || [],
+    experienceLevel: (user?.experienceLevel as any) || 'INTERMEDIATE',
+    interests: user?.interests.map((i: any) => i.interestName) || [],
+    contributionTypes: user?.preferences.map((p: any) => p.type) || [],
+  };
 
   const languagesList = ['JavaScript', 'TypeScript', 'Python', 'Go', 'Rust', 'Java', 'C++', 'PHP'];
 
@@ -153,56 +141,16 @@ export default async function ExplorePage({ searchParams }: PageProps) {
         </div>
       </form>
 
-      {/* Error or Rate Limit Banner */}
-      {result.error && (
-        <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 text-sm flex items-center gap-3">
-          <AlertTriangle className="w-5 h-5 shrink-0" />
-          <div>
-            <p className="font-bold">{result.isRateLimited ? 'GitHub API Rate Limit' : 'Data Request Issue'}</p>
-            <p className="text-xs text-amber-400/80">{result.error}</p>
-          </div>
-        </div>
-      )}
-
-      {/* Repository Grid */}
-      {result.repositories.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {result.repositories.map((repo) => (
-            <RepositoryCard key={repo.id} repository={repo} />
-          ))}
-        </div>
-      ) : (
-        !result.error && (
-          <div className="text-center py-16 space-y-3 bg-card border border-border rounded-xl">
-            <Compass className="w-10 h-10 text-muted-foreground mx-auto" />
-            <h3 className="text-lg font-bold text-foreground">No repositories found</h3>
-            <p className="text-xs text-muted-foreground max-w-sm mx-auto">
-              Try adjusting your search query, removing language constraints, or clearing filters.
-            </p>
-          </div>
-        )
-      )}
-
-      {/* Pagination controls */}
-      {result.totalCount > 12 && (
-        <div className="flex items-center justify-between pt-6 border-t border-border">
-          <p className="text-xs text-muted-foreground font-mono">
-            Showing page {page} of {Math.ceil(Math.min(result.totalCount, 1000) / 12)}
-          </p>
-          <div className="flex gap-2">
-            {page > 1 && (
-              <a href={`/explore?query=${encodeURIComponent(query)}&page=${page - 1}&sort=${sort}&language=${language}`}>
-                <Button variant="outline" size="sm">Previous Page</Button>
-              </a>
-            )}
-            {page * 12 < result.totalCount && (
-              <a href={`/explore?query=${encodeURIComponent(query)}&page=${page + 1}&sort=${sort}&language=${language}`}>
-                <Button variant="primary" size="sm">Next Page</Button>
-              </a>
-            )}
-          </div>
-        </div>
-      )}
+      {/* Repository Grid Workspace (client) */}
+      <ExploreClient
+        userPref={userPref}
+        query={query}
+        language={language}
+        minStars={minStars}
+        goodFirstIssues={goodFirstIssuesOnly}
+        activeOnly={activeOnly}
+        sort={sort}
+      />
 
       </div>
     </div>

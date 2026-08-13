@@ -8,7 +8,6 @@ import { Navbar } from '@/components/layout/navbar';
 import { Code2, Filter, GitPullRequest, ArrowRight, ChevronRight } from 'lucide-react';
 
 export default function HomePage() {
-  // Static values for instant page load
   const repoCount = '100,000';
   const openIssueCount = '50,000';
   const gfiCount = '10,000';
@@ -82,14 +81,6 @@ export default function HomePage() {
     },
   ];
 
-  if (false) { // Removed loading state for instant page load
-    return (
-      <div className="w-full bg-black text-white min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-white/20 border-t-white" />
-      </div>
-    );
-  }
-
   return (
     <div className="w-full bg-black text-white selection:bg-white selection:text-black">
       <Navbar />
@@ -110,7 +101,7 @@ export default function HomePage() {
               { label: 'OPEN ISSUES AVAILABLE', count: `${openIssueCount}+`, detail: 'Actionable tickets categorized by difficulty' },
               { label: 'GOOD FIRST ISSUES', count: `${gfiCount}+`, detail: 'Beginner-friendly tickets ready for first PRs' },
             ].map((stat, idx) => (
-              <div key={idx} className="border-l border-white/20 pl-8 space-y-3 hover:border-white transition-colors duration-500">
+              <div key={idx} className="border-l border-white/20 pl-8 space-y-3 hover:border-white transition-colors duration-500 text-left">
                 <span className="text-[11px] tracking-[0.12em] uppercase text-white/50 font-mono block">
                   {stat.label}
                 </span>
@@ -131,7 +122,7 @@ export default function HomePage() {
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-6">
             <div>
               <span className="text-[11px] tracking-[0.14em] text-white/50 uppercase font-mono block mb-4">
-                // SYSTEM ARCHITECTURE
+                SYSTEM ARCHITECTURE
               </span>
               <h2 className="text-[42px] sm:text-[58px] font-[300] leading-[1.05] tracking-[-0.02em] text-white font-serif">
                 How RepoScout Works
@@ -178,7 +169,7 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-20 gap-6">
             <div>
               <span className="text-[11px] tracking-[0.14em] text-white/50 uppercase font-mono block mb-4">
-                // PLATFORM CAPABILITIES
+                PLATFORM CAPABILITIES
               </span>
               <h2 className="text-[42px] sm:text-[58px] font-[300] leading-[1.05] tracking-[-0.02em] text-white font-serif">
                 Engineered for Open Source
@@ -249,8 +240,8 @@ export default function HomePage() {
             </p>
 
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-              <Link href="/onboarding" className="btn-pill-hero text-center justify-center">
-                <span>Start Matching Now</span>
+              <Link href="/explore" className="btn-pill-hero text-center justify-center">
+                <span>Start Exploring</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
               <Link href="/good-first-issues" className="btn-pill-hero-ghost text-center justify-center">
@@ -263,3 +254,5 @@ export default function HomePage() {
     </div>
   );
 }
+
+

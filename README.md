@@ -1,267 +1,108 @@
-# RepoScout
+# RepoScout — Open-Source Discovery & Contribution Workspace
 
-Discover open-source projects and issues that match your skills. Track your contributions, earn badges, and grow your developer journey.
-
-## Features
-
-### Core Features
-- **Smart Recommendations** - AI-powered matching of issues to your skills and interests
-- **GitHub Integration** - One-click fork, clone, and contribute workflow
-- **Good First Issues** - Curated beginner-friendly issues from top repositories
-- **Issue Discovery** - Advanced search and filtering for open-source contributions
-- **Repository Explorer** - Browse trending and popular repositories
-
-### User Experience
-- **Personalized Dashboard** - View recommendations based on your profile
-- **Analytics Dashboard** - Track contributions, streaks, points, and progress
-- **Badges & Achievements** - Earn rewards for milestones and consistency
-- **Level System** - Progress through levels as you contribute more
-- **Contribution Heatmap** - Visualize your activity over time
-- **Bookmarking** - Save repositories and issues for later
-
-### Authentication
-- **GitHub OAuth** - Secure sign-in with GitHub
-- **Public Mode** - Browse without authentication
-- **Session Management** - Persistent login with NextAuth
-
-## Tech Stack
-
-- **Framework**: Next.js 14 (App Router)
-- **Language**: TypeScript
-- **Database**: SQLite with Prisma ORM
-- **Authentication**: NextAuth.js with GitHub OAuth
-- **Styling**: Tailwind CSS
-- **UI Components**: Custom components with Radix UI primitives
-- **API**: GitHub REST API
-
-## Quick Start
-
-### Prerequisites
-- Node.js 18+ 
-- npm or yarn
-- GitHub account (for authentication features)
-
-### Installation
-
-1. Clone the repository
-```bash
-git clone https://github.com/yourusername/RepoScout.git
-cd RepoScout
-```
-
-2. Install dependencies
-```bash
-npm install
-```
-
-3. Set up environment variables
-```bash
-cp .env.example .env
-```
-
-4. Configure your `.env` file with GitHub OAuth credentials (see Setup section)
-
-5. Initialize the database
-```bash
-npx prisma db push
-npx tsx prisma/seed.ts
-```
-
-6. Start the development server
-```bash
-npm run dev
-```
-
-7. Open [http://localhost:3000](http://localhost:3000)
-
-## GitHub OAuth Setup
-
-### Create GitHub OAuth App
-
-1. Go to [GitHub Developer Settings](https://github.com/settings/developers)
-2. Click "OAuth Apps" then "New OAuth App"
-3. Fill in the details:
-   - **Application name**: RepoScout
-   - **Homepage URL**: http://localhost:3000
-   - **Callback URL**: http://localhost:3000/api/auth/callback/github
-4. Copy your Client ID and generate a Client Secret
-
-### Update Environment Variables
-
-Add to your `.env` file:
-```env
-GITHUB_CLIENT_ID="your-client-id"
-GITHUB_CLIENT_SECRET="your-client-secret"
-NEXT_PUBLIC_GITHUB_AUTH_ENABLED="true"
-NEXT_PUBLIC_GITHUB_CLIENT_ID="your-client-id"
-```
-
-### Optional: GitHub Token
-
-For higher API rate limits (5000/hour vs 60/hour):
-1. Create a token at [GitHub Tokens](https://github.com/settings/tokens)
-2. Select `public_repo` scope
-3. Add to `.env`:
-```env
-GITHUB_TOKEN="your-token"
-```
-
-## Project Structure
-
-```
-RepoScout/
-├── app/                    # Next.js App Router pages
-│   ├── api/               # API routes
-│   ├── auth/              # Authentication pages
-│   ├── dashboard/         # User dashboard & analytics
-│   ├── explore/           # Repository explorer
-│   ├── issues/            # Issue browser
-│   └── profile/           # User profiles
-├── components/            # React components
-│   ├── github/           # Fork & clone workflow
-│   ├── issues/           # Issue cards & modals
-│   ├── layout/           # Navbar, footer, providers
-│   ├── projects/         # Repository cards
-│   ├── recommendation/   # Recommendation engine UI
-│   └── ui/               # Base UI components
-├── lib/                   # Utility libraries
-│   ├── auth/             # NextAuth configuration
-│   ├── db/               # Prisma client
-│   ├── github/           # GitHub API integration
-│   └── recommendation/   # Match scoring algorithms
-├── prisma/               # Database schema & migrations
-└── public/               # Static assets
-```
-
-## Key Features Explained
-
-### Analytics Dashboard
-- **Level & Progress**: Track your contributor level and points
-- **Stats Grid**: Forks, issues closed, PRs merged, current streak
-- **Contribution Heatmap**: Visual activity calendar (GitHub-style)
-- **Badges**: Earn achievements for milestones
-- **Recent Activity**: Timeline of your contributions
-
-### Contribution Tracking
-The app automatically tracks when you:
-- Fork repositories (10 points)
-- Open issues (5 points)
-- Submit pull requests (15 points)
-- Get PRs merged (25 points)
-- Close issues (10 points)
-
-### Badge System
-Earn badges for:
-- First Fork
-- Contribution streaks (7, 30 days)
-- Milestones (10, 25, 50, 100 contributions)
-- Skill achievements (Issues closed, PRs merged)
-
-### Match Scoring
-Issues are scored based on:
-- Skill match (your profile vs issue labels)
-- Experience level alignment
-- Interest relevance
-- Contribution type preference
-
-## Available Scripts
-
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run start` - Start production server
-- `npm run lint` - Run ESLint
-- `npm run test` - Run tests with Vitest
-- `npx prisma studio` - Open database GUI
-
-## Database Schema
-
-Key models:
-- **User** - Profile, skills, interests, preferences
-- **Contribution** - Tracked contributions with points
-- **Badge** - Achievement definitions
-- **UserBadge** - Earned badges
-- **UserStats** - Aggregated statistics
-- **SavedRepository** - Bookmarked repos
-- **SavedIssue** - Bookmarked issues
-
-## API Endpoints
-
-### Authentication
-- `GET/POST /api/auth/[...nextauth]` - NextAuth handlers
-- `GET /api/auth/signin` - Sign-in page
-
-### GitHub Integration
-- `POST /api/github/fork` - Fork a repository
-
-### User Data
-- `POST /api/user/onboarding` - Save user preferences
-- `POST /api/user/saved` - Bookmark repos/issues
-- `GET /api/user/saved` - Get bookmarks
-
-### Contributions
-- `POST /api/contributions` - Track a contribution
-
-## Environment Variables
-
-Required:
-```env
-DATABASE_URL="file:./dev.db"
-AUTH_SECRET="your-auth-secret"
-NEXTAUTH_SECRET="your-nextauth-secret"
-```
-
-Optional (GitHub features):
-```env
-GITHUB_CLIENT_ID=""
-GITHUB_CLIENT_SECRET=""
-NEXT_PUBLIC_GITHUB_AUTH_ENABLED="true"
-NEXT_PUBLIC_GITHUB_CLIENT_ID=""
-GITHUB_TOKEN=""
-```
-
-## Deployment
-
-### Vercel (Recommended)
-1. Push to GitHub
-2. Import project in Vercel
-3. Add environment variables
-4. Create production GitHub OAuth App
-5. Deploy
-
-### Other Platforms
-- Works on any platform supporting Next.js
-- Set environment variables in platform settings
-- Configure GitHub OAuth callback URLs for production domain
-
-## Contributing
-
-Contributions welcome! Please:
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
-
-## License
-
-MIT License - see LICENSE file for details
-
-## Support
-
-For issues or questions:
-- Open a GitHub issue
-- Check existing issues for solutions
-- Review documentation in `/docs` (if available)
-
-## Acknowledgments
-
-Built with:
-- Next.js and React
-- GitHub API
-- Prisma ORM
-- NextAuth.js
-- Tailwind CSS
-- Lucide Icons
+RepoScout helps developers discover open-source repositories and actionable issues matched to their skills, experience level, domain interests, and preferred tech stack.
 
 ---
 
-Made with ❤️ for the open-source community
+## 📌 Project Overview
+
+This repository contains the **RepoScout Frontend Demonstration & Product Prototype**. It is designed as a standalone Next.js 14 web application demonstrating the complete open-source contribution journey:
+
+1. **Evaluate**: View deterministic match scores (0–100%) broken down by skill, experience, domain interest, and activity velocity.
+2. **Explore**: Search open-source projects by language, star threshold, difficulty, and good-first-issue density.
+3. **Save**: Bookmark priority repositories and issues into your local workspace.
+4. **Contribute**: Follow an interactive 10-step guided roadmap from understanding issues through pull request review.
+5. **Track**: Monitor your contribution streaks, XP points, heatmaps, and achievements.
+
+---
+
+## 🚀 Tech Stack
+
+- **Framework**: Next.js 14 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **Animations**: Framer Motion
+- **Icons**: Lucide React
+- **Testing**: Vitest (`npm run test`)
+- **Linting**: ESLint 8 (`npm run lint`)
+
+---
+
+## ⚙️ Demonstration Mode & Deployment Note
+
+> **Note for Judges & Reviewers:**
+> RepoScout is currently operating in **Curated Frontend Demonstration Mode**.
+> - **No GitHub OAuth / API Keys required**: All data is provided via curated local demo datasets.
+> - **Zero Environment Setup**: You do not need to configure `.env` variables or external databases to build, run, or deploy this project.
+> - **State Persistence**: User progress, bookmarks, and workflow step completions persist across sessions via `localStorage`.
+
+---
+
+## 🔮 Future Enhancements (Backend & Git Integration)
+
+The production roadmap for RepoScout includes backend services and Git CLI integrations:
+
+1. **GitHub OAuth & NextAuth Authentication**:
+   - Secure GitHub sign-in for syncing real contributor profiles and personal scopes.
+2. **Live GitHub REST & GraphQL API Integration**:
+   - Real-time polling of public repository activity, open PR counts, and live label indexing.
+3. **Automated Git CLI Workflow Engine**:
+   - One-click repository forking (`gh repo fork`) and local workspace cloning (`git clone`).
+   - Automated branch creation (`git checkout -b`) and PR submission (`gh pr create`) straight from the workspace.
+4. **Database Persistence**:
+   - User profiles, saved bookmarks, and contribution streak history backed by PostgreSQL / Prisma ORM.
+
+---
+
+## 🛠️ Quick Start (Local Development)
+
+### Prerequisites
+- Node.js 18.x or later
+- npm or yarn
+
+### Installation & Execution
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/your-username/RepoScout.git
+cd RepoScout
+
+# 2. Install dependencies
+npm install
+
+# 3. Start the development server
+npm run dev
+
+# 4. Open http://localhost:3000 in your browser
+```
+
+---
+
+## 🧪 Quality & Verification Commands
+
+```bash
+# Run unit test suite (Vitest)
+npm run test
+
+# Run ESLint check
+npm run lint
+
+# Build production bundle
+npx next build
+```
+
+---
+
+## 📦 Deployment (Vercel / Netlify)
+
+RepoScout is pre-configured for zero-config deployment on Vercel:
+
+1. Push code to your GitHub repository.
+2. Import the project into [Vercel](https://vercel.com).
+3. Click **Deploy** (no environment variables required).
+
+---
+
+## 📜 License
+
+MIT License — see [LICENSE](LICENSE) for details.

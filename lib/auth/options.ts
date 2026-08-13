@@ -1,109 +1,93 @@
-import { NextAuthOptions, getServerSession } from 'next-auth';
-import GithubProvider from 'next-auth/providers/github';
-import { prisma } from '../db/prisma';
+// Demo mode - No authentication required
+// This is a frontend-only demo for project submission
 
-// Check for required environment variables
-const hasGitHubAuth = 
-  process.env.GITHUB_CLIENT_ID?.trim() && 
-  process.env.GITHUB_CLIENT_SECRET?.trim();
+export type UserWithRelations = {
+  id: string;
+  name: string;
+  username: string;
+  email: string;
+  avatarUrl: string | null;
+  bio: string | null;
+  experienceLevel: string;
+  skills: Array<{ id: string; skillName: string; level: string }>;
+  interests: Array<{ id: string; interestName: string }>;
+  preferences: Array<{ id: string; type: string }>;
+  savedRepos: Array<any>;
+  savedIssues: Array<any>;
+  contributions: Array<any>;
+  badges: Array<any>;
+  stats: any;
+};
 
-export const authOptions: NextAuthOptions = {
-  providers: hasGitHubAuth
-    ? [
-        GithubProvider({
-          clientId: process.env.GITHUB_CLIENT_ID!.trim(),
-          clientSecret: process.env.GITHUB_CLIENT_SECRET!.trim(),
-          authorization: {
-            params: {
-              scope: 'read:user user:email public_repo',
-            },
-          },
-        }),
-      ]
-    : [],
-  secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET,
-  session: {
-    strategy: 'jwt',
-  },
-  callbacks: {
-    async signIn({ user, account, profile }) {
-      if (!user.email && !account?.providerAccountId) return false;
-
-      const githubId = account?.providerAccountId || user.id;
-      const username = (profile as any)?.login || user.name?.toLowerCase().replace(/\s+/g, '') || `user_${githubId}`;
-
-      try {
-        // Upsert user in database
-        await prisma.user.upsert({
-          where: { githubId },
-          update: {
-            name: user.name || username,
-            email: user.email,
-            avatarUrl: user.image,
-            username,
-          },
-          create: {
-            githubId,
-            username,
-            name: user.name || username,
-            email: user.email,
-            avatarUrl: user.image,
-            experienceLevel: 'BEGINNER',
-          },
-        });
-      } catch (err) {
-        console.error('Error syncing user during sign in:', err);
-      }
-      return true;
-    },
-    async jwt({ token, account, profile }) {
-      if (account && profile) {
-        token.githubId = account.providerAccountId;
-        token.username = (profile as any).login;
-        token.accessToken = account.access_token;
-      }
-      return token;
-    },
-    async session({ session, token }) {
-      if (session.user) {
-        (session.user as any).githubId = token.githubId;
-        (session.user as any).username = token.username;
-        (session as any).accessToken = token.accessToken;
-      }
-      return session;
-    },
-  },
-  pages: {
-    signIn: '/auth/signin',
+// Demo user for frontend showcase
+export const DEMO_USER: UserWithRelations = {
+  id: 'demo-user-1',
+  name: 'Demo Developer',
+  username: 'demo-dev',
+  email: 'demo@reposcout.dev',
+  avatarUrl: 'https://github.com/github.png',
+  bio: 'Frontend Developer | Open Source Enthusiast | Building amazing things',
+  experienceLevel: 'INTERMEDIATE',
+  skills: [
+    { id: '1', skillName: 'TypeScript', level: 'ADVANCED' },
+    { id: '2', skillName: 'React', level: 'ADVANCED' },
+    { id: '3', skillName: 'Next.js', level: 'INTERMEDIATE' },
+    { id: '4', skillName: 'Node.js', level: 'INTERMEDIATE' },
+    { id: '5', skillName: 'Python', level: 'BEGINNER' },
+  ],
+  interests: [
+    { id: '1', interestName: 'Web Development' },
+    { id: '2', interestName: 'Open Source' },
+    { id: '3', interestName: 'UI/UX Design' },
+    { id: '4', interestName: 'DevOps' },
+  ],
+  preferences: [
+    { id: '1', type: 'BUG_FIX' },
+    { id: '2', type: 'FEATURE' },
+    { id: '3', type: 'DOCUMENTATION' },
+  ],
+  savedRepos: [
+    { id: '1', owner: 'demo', repo: 'awesome-ui' },
+    { id: '2', owner: 'demo', repo: 'react-hooks' },
+    { id: '3', owner: 'demo', repo: 'api-server' },
+  ],
+  savedIssues: [
+    { id: '1', owner: 'demo', repo: 'awesome-ui', issueNumber: 123 },
+    { id: '2', owner: 'demo', repo: 'react-hooks', issueNumber: 456 },
+  ],
+  contributions: [
+    { id: '1', type: 'PR_OPENED', repoName: 'demo/awesome-ui', title: 'Add dark mode', createdAt: '2024-01-15' },
+    { id: '2', type: 'ISSUE_CLOSED', repoName: 'demo/react-hooks', title: 'Fix memory leak', createdAt: '2024-01-14' },
+    { id: '3', type: 'PR_MERGED', repoName: 'demo/api-server', title: 'Update docs', createdAt: '2024-01-13' },
+    { id: '4', type: 'FORK', repoName: 'demo/code-editor', title: 'Forked repository', createdAt: '2024-01-12' },
+    { id: '5', type: 'PR_OPENED', repoName: 'demo/form-validator', title: 'Improve error messages', createdAt: '2024-01-11' },
+  ],
+  badges: [
+    { id: '1', badge: { name: 'First Fork', icon: 'GitFork', description: 'Forked your first repository' } },
+    { id: '2', badge: { name: 'PR Champion', icon: 'Trophy', description: 'Opened 5 pull requests' } },
+    { id: '3', badge: { name: 'Bug Hunter', icon: 'Bug', description: 'Closed 10 issues' } },
+  ],
+  stats: {
+    totalContributions: 42,
+    totalPoints: 385,
+    currentStreak: 7,
+    longestStreak: 12,
+    repositoriesForked: 8,
+    issuesClosed: 15,
+    pullRequestsMerged: 12,
+    level: 3,
+    nextLevelPoints: 500,
   },
 };
 
-export async function getCurrentUser() {
-  const session = await getServerSession(authOptions);
-  if (!session?.user) return null;
-
-  const githubId = (session.user as any).githubId;
-  const username = (session.user as any).username;
-
-  if (!githubId && !username) return null;
-
-  const user = await prisma.user.findFirst({
-    where: {
-      OR: [
-        { githubId: githubId || undefined },
-        { username: username || undefined },
-        { email: session.user.email || undefined },
-      ],
-    },
-    include: {
-      skills: true,
-      interests: true,
-      preferences: true,
-      savedRepos: true,
-      savedIssues: true,
-      contributions: true,
-    },
-  });
-
-  return user;
+// Return demo user for all pages
+export async function getCurrentUser(): Promise<UserWithRelations | null> {
+  // Always return demo user for frontend showcase
+  return DEMO_USER;
 }
+
+// Dummy auth options (not used but needed for compatibility)
+export const authOptions = {
+  providers: [],
+  secret: 'demo-secret',
+};
