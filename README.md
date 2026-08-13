@@ -1,56 +1,36 @@
 # 🔍 RepoScout
 
-**Discover your next open-source contribution with gamified, personalized repository matching.**
+**Discover your next open-source contribution with gamified repository matching.**
 
-RepoScout transforms how developers find and contribute to open-source projects by combining intelligent matching algorithms with addictive gaming mechanics. Built for developers who want to make meaningful contributions without spending hours searching.
+[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://repo-scout-nine.vercel.app/)
+[![Next.js](https://img.shields.io/badge/Next.js-14-black)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.6-blue)](https://www.typescriptlang.org/)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+> **🌐 Live Demo**: [https://repo-scout-nine.vercel.app/](https://repo-scout-nine.vercel.app/)
 
 ---
 
-## ✨ Key Features
+## 🎯 What is RepoScout?
 
-### 🎮 **Gamification System**
-- **XP & Leveling**: Earn experience points and level up as you contribute
-- **Daily Quests**: Complete challenges to earn rewards and build streaks
-- **Achievements**: Unlock 8+ achievements across 4 rarity tiers
-- **Leaderboards**: Compete with the community and track your rank
-- **Streak Tracking**: Maintain contribution streaks with visual fire indicators
-- **Contribution Heatmap**: GitHub-style activity visualization
-- **Live Activity Feed**: Real-time updates from the community
+RepoScout helps developers find and contribute to open-source projects through intelligent matching and gamification. Match repositories with your skills, track your contributions, and level up as you contribute.
 
-### 🎯 **Smart Discovery**
-- **Personalized Matching**: Repositories scored 70-100% based on your skills
-- **Advanced Filters**: Language, difficulty, experience level, activity status
-- **Repository Explorer**: Browse and search thousands of projects
-- **Issue Browser**: Find good first issues and help wanted tasks
-- **Skill-Based Recommendations**: Matched to TypeScript, React, Python, and more
+### Core Features
 
-### 📊 **Analytics Dashboard**
-- **Contribution Stats**: Track forks, PRs, issues, and commits
-- **Skill Radar Chart**: Visualize your technology stack
-- **12-Week Heatmap**: See your contribution patterns
-- **Badge Collection**: Display earned achievements
-- **Progress Tracking**: Monitor level progression and XP gains
-
-### 🎨 **Modern UX**
-- **Dark Theme**: Professional #09090B background
-- **Smooth Animations**: 60fps Framer Motion effects
-- **Responsive Design**: Mobile-first approach
-- **Keyboard Shortcuts**: Power user navigation
-- **Confetti Celebrations**: Visual rewards for achievements
+- **🎮 Gamification System** - XP, levels, daily quests, achievements, and leaderboards
+- **🎯 Smart Matching** - 70-100% match scores based on your skills and interests
+- **📊 Analytics Dashboard** - Track contributions, streaks, and progress with visual charts
+- **🔍 Repository Explorer** - Search and filter 10,000+ repositories
+- **🐛 Issue Browser** - Find good first issues tailored to your experience level
+- **💫 Swipe Discovery** - Tinder-style interface for exploring projects
 
 ---
 
 ## 🚀 Quick Start
 
-### Prerequisites
-- Node.js 18+ or later
-- npm (comes with Node.js)
-
-### Installation
-
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/RepoScout.git
+# Clone repository
+git clone https://github.com/pallaviXD/RepoScout.git
 cd RepoScout
 
 # Install dependencies
@@ -60,217 +40,168 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-### Build for Production
-
-```bash
-# Create optimized production build
-npm run build
-
-# Start production server
-npm start
-```
+Open [http://localhost:3000](http://localhost:3000) - no authentication required!
 
 ---
 
-## 🎯 Demo Mode
+## 🎮 Current Demo Features
 
-**RepoScout currently operates in demo mode** to provide a complete experience without external dependencies:
+### Gamification
+- XP and leveling system (Level 1-10+)
+- Daily quests with progress tracking
+- 8 achievements across 4 rarity tiers
+- Streak counter with fire animations
+- Live activity feed
+- Community leaderboards
 
-### What's Included
-- ✅ **Full UI/UX**: Complete interface with all features enabled
-- ✅ **Mock Data**: 10 repositories, 12 issues, realistic user profiles
-- ✅ **Gamification**: Functional XP system, quests, achievements
-- ✅ **Analytics**: Charts, heatmaps, and progress tracking
-- ✅ **No Setup**: No API keys, database, or authentication required
+### Discovery & Exploration
+- Repository search with advanced filters
+- Issue browser with difficulty ratings
+- Good first issue recommendations
+- Match score breakdowns
+- Swipe-based discovery interface
 
-### Demo User Profile
-```
-Username: demo-dev
-Level: 3 (385 XP)
-Skills: TypeScript, React, Next.js, Node.js, Python
-Contributions: 42 total, 7-day streak
-Achievements: 3 badges unlocked
-```
-
----
-
-## 🗂️ Project Structure
-
-```
-RepoScout/
-├── app/                          # Next.js 14 App Router pages
-│   ├── dashboard/               # Gamification dashboard
-│   ├── explore/                 # Repository browser
-│   ├── issues/                  # Issue finder
-│   ├── discover/                # Swipe-based discovery (bonus)
-│   └── settings/                # User preferences
-├── components/                   # React components
-│   ├── gamification/            # XP, quests, achievements
-│   ├── charts/                  # Heatmap, radar charts
-│   ├── discovery/               # Swipe cards (bonus)
-│   └── ui/                      # Reusable UI components
-├── lib/                          # Utilities and logic
-│   ├── gamification/            # XP calculations, mock data
-│   ├── github/                  # Repository/issue utilities
-│   └── types/                   # TypeScript definitions
-└── public/                       # Static assets
-```
-
----
-
-## 🎮 Features Overview
-
-### Dashboard (`/dashboard`)
-- XP progress bar with animated leveling
-- 4 daily quests with progress tracking
-- Achievement showcase (8 achievements)
-- Streak counter with fire animation
-- Live activity feed (auto-updates every 10s)
-- Leaderboard showing top contributors
-- Quick stats: contributions, level, streak
-
-### Analytics (`/dashboard/analytics`)
-- Level progression visualization
-- Contribution statistics (forks, PRs, issues)
-- 12-week contribution heatmap
-- Badge collection display
-- Recent activity timeline
-- Streak tracking with best record
-
-### Repository Explorer (`/explore`)
-- Search by name, keyword, or description
-- Filter by language, stars, activity
-- Sort by stars, updates, forks, best-match
-- Repository cards with detailed stats
-- Good First Issue indicators
-- Topic tags and language badges
-
-### Issue Browser (`/issues`)
-- Search across all repositories
-- Filter by language, labels, repository
-- Good First Issue & Help Wanted toggles
-- Match score for personalized ranking
-- Sort by updated, created, comments
-- Detailed issue cards with context
-
-### Settings (`/settings`)
-- View user profile information
-- Manage skills and interests
-- Update preferences
-- Link to onboarding flow
+### Analytics
+- Contribution heatmaps (GitHub-style)
+- Skill radar charts
+- Progress tracking
+- Badge collection
+- Activity timelines
 
 ---
 
 ## 🛠️ Tech Stack
 
-### Frontend
 - **Framework**: Next.js 14 (App Router)
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
 - **Animations**: Framer Motion
 - **Charts**: Recharts, Victory
 - **Icons**: Lucide React
-- **Effects**: Canvas Confetti
-
-### Development
-- **Linting**: ESLint 9
-- **Testing**: Vitest
-- **Type Checking**: TypeScript 5.6
-- **Package Manager**: npm
+- **Deployment**: Vercel
 
 ---
 
-## 📈 Performance
+## 📁 Project Structure
 
-- **Build Time**: ~30 seconds
-- **Bundle Size**: 87.4 kB shared JS
-- **Routes**: 25 optimized pages
-- **Lighthouse Score**: 90+ (Performance, Accessibility, Best Practices)
+```
+RepoScout/
+├── app/                    # Next.js pages and routes
+│   ├── dashboard/         # Gamification dashboard
+│   ├── explore/           # Repository browser
+│   ├── issues/            # Issue finder
+│   └── discover/          # Swipe discovery
+├── components/            # React components
+│   ├── gamification/      # XP, quests, achievements
+│   ├── charts/            # Visualizations
+│   └── ui/                # Reusable UI components
+├── lib/                   # Utilities and logic
+│   ├── gamification/      # XP calculations
+│   └── github/            # Repository data
+└── public/                # Static assets
+```
+
+---
+
+## 🌟 Demo Mode
+
+RepoScout currently runs in **full demo mode**:
+
+- ✅ No authentication required
+- ✅ Mock data (10 repositories, 12 issues)
+- ✅ Realistic user profiles and stats
+- ✅ All features fully functional
+- ✅ Zero configuration needed
+
+**Demo User Profile:**
+- Username: demo-dev
+- Level: 3 (385 XP)
+- Skills: TypeScript, React, Next.js, Node.js, Python
+- Contributions: 42 total, 7-day streak
+- Achievements: 3 badges unlocked
+
+---
+
+## 🔮 Planned Enhancements
+
+### Phase 1: Authentication & Live Data
+- [ ] GitHub OAuth integration
+- [ ] Real-time GitHub API data
+- [ ] User profile syncing
+- [ ] Contribution tracking from actual GitHub activity
+
+### Phase 2: AI & Intelligence
+- [ ] AI chatbot for repository recommendations
+- [ ] Smart contribution suggestions
+- [ ] Skill gap analysis
+- [ ] Personalized learning paths
+
+### Phase 3: Enhanced Gamification
+- [ ] Advanced reward system with coins/gems
+- [ ] Team/guild system
+- [ ] Weekly/monthly challenges
+- [ ] Achievement trading/showcase
+- [ ] Contribution milestones with special rewards
+
+### Phase 4: Social Features
+- [ ] Mentor matching
+- [ ] Pair programming finder
+- [ ] Code review roulette
+- [ ] Community forums
+- [ ] Contribution battles (1v1)
 
 ---
 
 ## 🚀 Deployment
 
-### Vercel (Recommended)
+### Deploy to Vercel
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/pallaviXD/RepoScout)
+
+Or manually:
 
 ```bash
-# Install Vercel CLI
-npm i -g vercel
-
-# Deploy
-vercel
+npm install -g vercel
+vercel --prod
 ```
 
-Or connect your GitHub repository to Vercel for automatic deployments.
-
-### Other Platforms
-- **Netlify**: Zero-config deployment
-- **Railway**: Docker support
-- **AWS Amplify**: Enterprise hosting
-- **DigitalOcean**: Self-hosted option
-
-No environment variables required for demo mode!
+**No environment variables required for demo mode!**
 
 ---
 
-## 🔮 Future Enhancements
-
-### Phase 1: Live Integration
-- [ ] GitHub OAuth authentication
-- [ ] Real-time GitHub API integration
-- [ ] Live repository and issue data
-- [ ] User profile syncing
-- [ ] PostgreSQL database with Prisma
-
-### Phase 2: Advanced Features
-- [ ] Automated forking with GitHub CLI
-- [ ] One-click repository cloning
-- [ ] Branch creation and PR submission
-- [ ] Contribution workflow automation
-- [ ] GitHub Desktop integration
-
-### Phase 3: Social & Community
-- [ ] Team/Guild system
-- [ ] Pair programming matcher
-- [ ] Code review roulette
-- [ ] Mentor matching
-- [ ] Community challenges
-
-### Phase 4: AI & Intelligence
-- [ ] AI-powered repository recommendations
-- [ ] Skill gap analysis with learning paths
-- [ ] Issue difficulty prediction
-- [ ] Smart contribution suggestions
-- [ ] Automated code review assistance
-
----
-
-## 🧪 Testing
+## 🧪 Development
 
 ```bash
-# Run unit tests
-npm run test
+# Run development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Start production server
+npm start
 
 # Run linter
 npm run lint
 
-# Type checking
-npx tsc --noEmit
+# Run tests
+npm run test
 ```
 
 ---
 
-## 📝 License
+## 📊 Performance
 
-MIT License - see [LICENSE](LICENSE) for details.
+- **Build Time**: ~30 seconds
+- **Bundle Size**: 87.4 kB (shared JS)
+- **Routes**: 25 optimized pages
+- **Lighthouse Score**: 90+ (Performance, Accessibility)
 
 ---
 
 ## 🤝 Contributing
 
-We welcome contributions! However, note that this is currently a demo/portfolio project. For major changes:
+Contributions are welcome! Please follow these steps:
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
@@ -278,38 +209,38 @@ We welcome contributions! However, note that this is currently a demo/portfolio 
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
+See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
+
+---
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
 ---
 
 ## 🙏 Acknowledgments
 
-- **Next.js Team**: For the amazing framework
-- **Vercel**: For hosting platform
-- **Tailwind CSS**: For utility-first CSS
-- **Framer Motion**: For smooth animations
-- **GitHub**: For inspiration and the platform
+- **Next.js** - The React Framework
+- **Vercel** - Deployment Platform
+- **Tailwind CSS** - Utility-First CSS
+- **Framer Motion** - Animation Library
+- **GitHub** - API and Inspiration
 
 ---
 
 ## 📧 Contact
 
-**Project Link**: [https://github.com/yourusername/RepoScout](https://github.com/yourusername/RepoScout)
+- **Live Demo**: [https://repo-scout-nine.vercel.app/](https://repo-scout-nine.vercel.app/)
+- **Repository**: [https://github.com/pallaviXD/RepoScout](https://github.com/pallaviXD/RepoScout)
+- **Issues**: [Report a Bug](https://github.com/pallaviXD/RepoScout/issues)
 
 ---
 
-## 🎯 Why RepoScout?
+<div align="center">
 
-Traditional open-source discovery is broken:
-- ❌ Searching GitHub is overwhelming
-- ❌ Hard to find beginner-friendly projects
-- ❌ No personalized recommendations
-- ❌ Contribution tracking is manual
-- ❌ No motivation to maintain streaks
+**[View Live Demo](https://repo-scout-nine.vercel.app/)** • **[Report Bug](https://github.com/pallaviXD/RepoScout/issues)** • **[Request Feature](https://github.com/pallaviXD/RepoScout/issues)**
 
-RepoScout solves this:
-- ✅ Personalized 70-100% match scores
-- ✅ Filtered good first issues
-- ✅ Skill-based intelligent matching
-- ✅ Automatic progress tracking
-- ✅ Gamification keeps you motivated
+Made with ❤️ for the open-source community
 
-**Start your open-source journey today!** 🚀
+</div>
