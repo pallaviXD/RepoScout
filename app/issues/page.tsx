@@ -63,18 +63,19 @@ export default async function IssuesPage({ searchParams }: PageProps) {
   const languagesList = ['TypeScript', 'JavaScript', 'Python', 'Go', 'Rust', 'Java', 'C++'];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-      
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-extrabold text-foreground tracking-tight flex items-center gap-2">
-          <Bug className="w-7 h-7 text-primary" /> Issue Explorer
-        </h1>
-        <p className="text-sm text-secondary-foreground mt-1">
-          Find actionable open GitHub issues across top repositories.
-          {userPref && <span className="text-primary font-semibold"> Matches sorted using your developer profile.</span>}
-        </p>
-      </div>
+    <div className="min-h-screen bg-background">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8">
+        
+        {/* Header */}
+        <div className="pb-6 border-b border-border">
+          <h1 className="text-4xl font-extrabold text-foreground tracking-tight flex items-center gap-3">
+            <Bug className="w-8 h-8 text-primary" /> Issue Explorer
+          </h1>
+          <p className="text-sm text-muted-foreground mt-2 max-w-3xl">
+            Find actionable open GitHub issues across top repositories.
+            {userPref && <span className="text-primary font-semibold"> Matches sorted using your developer profile.</span>}
+          </p>
+        </div>
 
       {/* Filter Form */}
       <form method="GET" action="/issues" className="space-y-4 bg-card border border-card-border p-4 rounded-xl">

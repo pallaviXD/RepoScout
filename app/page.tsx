@@ -1,44 +1,17 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { BackgroundVideo } from '@/components/hero/BackgroundVideo';
-import { searchRepositories } from '@/lib/github/repositories';
-import { searchIssues } from '@/lib/github/issues';
-import { formatNumber } from '@/lib/utils';
 import { HeroContent } from '@/components/hero/HeroContent';
 import { Navbar } from '@/components/layout/navbar';
 import { Code2, Filter, GitPullRequest, ArrowRight, ChevronRight } from 'lucide-react';
 
 export default function HomePage() {
-  const [repoResult, setRepoResult] = useState({ totalCount: 0 });
-  const [issueResult, setIssueResult] = useState({ totalCount: 0 });
-  const [gfiResult, setGfiResult] = useState({ totalCount: 0 });
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [repo, issue, gfi] = await Promise.all([
-          searchRepositories({ minStars: 50, perPage: 1 }),
-          searchIssues({ perPage: 1 }),
-          searchIssues({ isGoodFirstIssue: true, perPage: 1 }),
-        ]);
-        setRepoResult(repo);
-        setIssueResult(issue);
-        setGfiResult(gfi);
-      } catch (err) {
-        console.error('Error fetching data:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
-
-  const repoCount      = repoResult.totalCount  || 100000;
-  const openIssueCount = issueResult.totalCount || 50000;
-  const gfiCount       = gfiResult.totalCount   || 10000;
+  // Static values for instant page load
+  const repoCount = '100,000';
+  const openIssueCount = '50,000';
+  const gfiCount = '10,000';
 
   const features = [
     {
@@ -109,7 +82,7 @@ export default function HomePage() {
     },
   ];
 
-  if (loading) {
+  if (false) { // Removed loading state for instant page load
     return (
       <div className="w-full bg-black text-white min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-4 border-white/20 border-t-white" />
@@ -129,22 +102,22 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="w-full bg-black text-white border-y border-white/10 py-16">
-        <div className="max-w-[1078px] mx-auto px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-left">
+      <section className="w-full bg-black text-white border-y border-white/10 py-20">
+        <div className="max-w-[1200px] mx-auto px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
             {[
-              { label: 'REPOSITORIES INDEXED', count: `${formatNumber(repoCount)}+`, detail: 'Public GitHub repositories continuously synced' },
-              { label: 'OPEN ISSUES AVAILABLE', count: `${formatNumber(openIssueCount)}+`, detail: 'Actionable tickets categorized by difficulty' },
-              { label: 'GOOD FIRST ISSUES', count: `${formatNumber(gfiCount)}+`, detail: 'Beginner-friendly tickets ready for first PRs' },
+              { label: 'REPOSITORIES INDEXED', count: `${repoCount}+`, detail: 'Public GitHub repositories continuously synced' },
+              { label: 'OPEN ISSUES AVAILABLE', count: `${openIssueCount}+`, detail: 'Actionable tickets categorized by difficulty' },
+              { label: 'GOOD FIRST ISSUES', count: `${gfiCount}+`, detail: 'Beginner-friendly tickets ready for first PRs' },
             ].map((stat, idx) => (
-              <div key={idx} className="border-l border-white/20 pl-6 space-y-2 hover:border-white transition-colors duration-500">
+              <div key={idx} className="border-l border-white/20 pl-8 space-y-3 hover:border-white transition-colors duration-500">
                 <span className="text-[11px] tracking-[0.12em] uppercase text-white/50 font-mono block">
                   {stat.label}
                 </span>
-                <p className="text-[44px] sm:text-[54px] font-[400] leading-none tracking-[-0.03em] font-sans text-white">
+                <p className="text-[48px] sm:text-[58px] font-[400] leading-none tracking-[-0.03em] font-sans text-white">
                   {stat.count}
                 </p>
-                <p className="text-[13px] text-white/60 font-[300] leading-relaxed pt-1">
+                <p className="text-[14px] text-white/60 font-[300] leading-relaxed pt-1">
                   {stat.detail}
                 </p>
               </div>
@@ -153,19 +126,19 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="w-full bg-black text-white py-24 border-b border-white/10">
-        <div className="max-w-[1078px] mx-auto px-8">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+      <section className="w-full bg-black text-white py-28 border-b border-white/10">
+        <div className="max-w-[1200px] mx-auto px-8">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-6">
             <div>
-              <span className="text-[11px] tracking-[0.14em] text-white/50 uppercase font-mono block mb-3">
+              <span className="text-[11px] tracking-[0.14em] text-white/50 uppercase font-mono block mb-4">
                 // SYSTEM ARCHITECTURE
               </span>
-              <h2 className="text-[38px] sm:text-[54px] font-[300] leading-[1.05] tracking-[-0.02em] text-white font-serif">
-                How RepoScout Works.
+              <h2 className="text-[42px] sm:text-[58px] font-[300] leading-[1.05] tracking-[-0.02em] text-white font-serif">
+                How RepoScout Works
               </h2>
             </div>
-            <p className="text-[15px] text-white/60 font-[300] max-w-sm leading-relaxed">
-              From developer profile definition to submitting your pull request on GitHub in three seamless steps.
+            <p className="text-[15px] text-white/60 font-[300] max-w-md leading-relaxed">
+              From profile setup to submitting your pull request in three seamless steps
             </p>
           </div>
 
@@ -173,19 +146,19 @@ export default function HomePage() {
             {steps.map(({ step, title, desc, icon: Icon, badge }) => (
               <div
                 key={step}
-                className="group liquid-glass p-8 flex flex-col justify-between h-full bg-white/[0.02] hover:bg-white/[0.04] transition-all duration-700 rounded-2xl"
+                className="group bg-white/[0.02] hover:bg-white/[0.05] transition-all duration-700 rounded-2xl border border-white/10 hover:border-white/20 p-10 flex flex-col justify-between h-full"
               >
                 <div>
                   <div className="flex items-center justify-between mb-8">
-                    <span className="text-[11px] font-mono tracking-widest px-3 py-1 rounded-full border border-white/20 text-white/80">
+                    <span className="text-[11px] font-mono tracking-widest px-3 py-1.5 rounded-full border border-white/20 text-white/80 bg-white/5">
                       STEP {step}
                     </span>
-                    <Icon className="w-5 h-5 text-white/60 group-hover:text-white transition-colors" />
+                    <Icon className="w-6 h-6 text-white/40 group-hover:text-white transition-colors" />
                   </div>
-                  <h3 className="text-[22px] font-[400] text-white mb-3 leading-snug">
+                  <h3 className="text-[24px] font-[400] text-white mb-4 leading-snug">
                     {title}
                   </h3>
-                  <p className="text-[14px] text-white/60 font-[300] leading-relaxed">
+                  <p className="text-[15px] text-white/60 font-[300] leading-relaxed">
                     {desc}
                   </p>
                 </div>
@@ -200,15 +173,15 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="w-full bg-black text-white py-24">
-        <div className="max-w-[1078px] mx-auto px-8">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-16 gap-6">
+      <section className="w-full bg-black text-white py-28">
+        <div className="max-w-[1200px] mx-auto px-8">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-20 gap-6">
             <div>
-              <span className="text-[11px] tracking-[0.14em] text-white/50 uppercase font-mono block mb-3">
+              <span className="text-[11px] tracking-[0.14em] text-white/50 uppercase font-mono block mb-4">
                 // PLATFORM CAPABILITIES
               </span>
-              <h2 className="text-[38px] sm:text-[54px] font-[300] leading-[1.05] tracking-[-0.02em] text-white font-serif">
-                Engineered for Open Source.
+              <h2 className="text-[42px] sm:text-[58px] font-[300] leading-[1.05] tracking-[-0.02em] text-white font-serif">
+                Engineered for Open Source
               </h2>
             </div>
             <Link
@@ -220,33 +193,33 @@ export default function HomePage() {
             </Link>
           </div>
 
-          <div className="border-t border-white/15">
+          <div className="border-t border-white/10">
             {features.map((f, i) => (
               <Link
                 key={i}
                 href={f.link}
-                className="group flex flex-col md:flex-row md:items-center justify-between py-7 border-b border-white/10 cursor-pointer hover:bg-white/[0.02] px-4 transition-all duration-500 rounded-lg"
+                className="group flex flex-col md:flex-row md:items-center justify-between py-8 border-b border-white/10 cursor-pointer hover:bg-white/[0.02] px-6 transition-all duration-500 rounded-lg"
               >
-                <div className="flex items-start md:items-center gap-6 md:gap-12 flex-1 pr-6">
-                  <span className="text-[12px] font-mono text-white/40 font-medium w-8">
+                <div className="flex items-start md:items-center gap-8 md:gap-12 flex-1 pr-6">
+                  <span className="text-[13px] font-mono text-white/40 font-medium w-10 shrink-0">
                     {f.number}
                   </span>
-                  <div>
-                    <div className="flex items-center gap-3 mb-1">
-                      <h3 className="text-[20px] font-[400] text-white group-hover:translate-x-1 transition-transform duration-500">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                      <h3 className="text-[22px] font-[400] text-white group-hover:translate-x-1 transition-transform duration-500">
                         {f.title}
                       </h3>
-                      <span className="text-[10px] font-mono tracking-wider px-2 py-0.5 border border-white/20 text-white/60 uppercase rounded-full">
+                      <span className="text-[10px] font-mono tracking-wider px-2.5 py-1 border border-white/20 text-white/60 uppercase rounded-full">
                         {f.category}
                       </span>
                     </div>
-                    <p className="text-[14px] text-white/60 font-[300] max-w-2xl leading-relaxed">
+                    <p className="text-[15px] text-white/60 font-[300] max-w-3xl leading-relaxed">
                       {f.desc}
                     </p>
                   </div>
                 </div>
 
-                <div className="mt-4 md:mt-0 flex items-center gap-2 text-[12px] font-[400] text-white shrink-0">
+                <div className="mt-4 md:mt-0 flex items-center gap-2 text-[13px] font-[400] text-white shrink-0">
                   <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-500">Explore</span>
                   <ArrowRight className="w-4 h-4 text-white group-hover:translate-x-1 transition-transform duration-500" />
                 </div>

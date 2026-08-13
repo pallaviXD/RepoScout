@@ -49,15 +49,18 @@ export default async function ExplorePage({ searchParams }: PageProps) {
   const languagesList = ['JavaScript', 'TypeScript', 'Python', 'Go', 'Rust', 'Java', 'C++', 'PHP'];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-      
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-extrabold text-foreground tracking-tight">Explore Repositories</h1>
-        <p className="text-sm text-secondary-foreground mt-1">
-          Discover open-source repositories matching your preferred stack, language, and contribution criteria.
-        </p>
-      </div>
+    <div className="min-h-screen bg-background">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8">
+        
+        {/* Header */}
+        <div className="pb-6 border-b border-border">
+          <h1 className="text-4xl font-extrabold text-foreground tracking-tight flex items-center gap-3">
+            <Compass className="w-8 h-8 text-primary" /> Explore Repositories
+          </h1>
+          <p className="text-sm text-muted-foreground mt-2 max-w-3xl">
+            Discover open-source repositories matching your preferred stack, language, and contribution criteria.
+          </p>
+        </div>
 
       {/* Search & Filters Controls */}
       <form method="GET" action="/explore" className="space-y-4 bg-card border border-card-border p-4 rounded-xl">
